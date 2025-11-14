@@ -1,6 +1,11 @@
 name: Create Azure AKS With Terraform
 on:
   workflow_dispatch:
+    inputs:
+      destroy:
+        description: 'Destroy infrastructure?'
+        required: false
+        default: 'false'
 
 permissions:
       id-token: write
@@ -37,20 +42,22 @@ jobs:
         id: validate
         run: terraform validate
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
-        continue-on-error: true
-
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.plan.outcome == 'failure' && github.event.inputs.destroy != 'true'
         run: exit 1
 
       - name: Terraform Apply
+        if: ${{ github.event.inputs.destroy != 'true' }}
         run: terraform apply -auto-approve
 
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.destroy == 'true' }}
+        run: terraform destroy -auto-approve
+
       - name: Terraform Output
+        if: ${{ github.event.inputs.destroy != 'true' }}
         run: terraform output
+
 
       #- name: Deploy Application
       #  run: |
