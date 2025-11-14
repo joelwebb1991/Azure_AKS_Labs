@@ -42,10 +42,15 @@ jobs:
         id: validate
         run: terraform validate
 
-      - name: Terraform Plan Status
+      - name: Terraform Plan
         id: plan
         run: terraform plan
+        continue-on-error: true
 
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+        
       - name: Terraform Apply
         if: ${{ github.event.inputs.destroy != 'true' }}
         run: terraform apply -auto-approve
