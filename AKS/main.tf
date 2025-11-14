@@ -21,7 +21,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   name                = random_pet.azurerm_kubernetes_cluster_name.id
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = random_pet.azurerm_kubernetes_cluster_dns_prefix.id
-  kubernetes_version  = "1.30.0"
+  kubernetes_version  = "1.33.0"
 
   identity {
     type = "SystemAssigned"
@@ -29,7 +29,8 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   default_node_pool {
     name       = "agentpool"
-    vm_size    = "Standard_D2_v2"
+    vm_size    = "Standard_B1s"
+
     node_count = var.node_count
   }
   linux_profile {
