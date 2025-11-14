@@ -18,6 +18,14 @@ terraform {
       source  = "hashicorp/time"
       version = "0.9.1"
     }
+  }  
+ backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "joelwebb1991"
+
+    workspaces {
+      name = "Azure_AKS_Labs"
+    }
   }
 }
 
